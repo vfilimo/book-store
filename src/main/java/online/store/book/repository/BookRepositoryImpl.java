@@ -1,5 +1,6 @@
 package online.store.book.repository;
 
+import java.util.List;
 import online.store.book.model.Book;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -8,8 +9,6 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class BookRepositoryImpl implements BookRepository {
@@ -44,7 +43,7 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public List<Book> getAll() {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<Book> query = session.createQuery("FROM Book", Book.class);
             return query.getResultList();
         }

@@ -1,5 +1,6 @@
 package online.store.book;
 
+import java.math.BigDecimal;
 import online.store.book.model.Book;
 import online.store.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import java.math.BigDecimal;
 
 @SpringBootApplication
 public class BookStoreApplication {
