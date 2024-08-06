@@ -45,7 +45,7 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public List<Book> getAll() {
         try(Session session = sessionFactory.openSession()) {
-            Query<Book> query = session.createQuery("FROM book", Book.class);
+            Query<Book> query = session.createQuery("FROM Book", Book.class);
             return query.getResultList();
         }
     }
