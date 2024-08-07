@@ -2,6 +2,7 @@ package online.store.book.repository;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import online.store.book.exceptions.DataProcessingException;
 import online.store.book.model.Book;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -29,7 +30,7 @@ public class BookRepositoryImpl implements BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Can't save book: " + book + " to DB!", e);
+            throw new DataProcessingException("Can't save book: " + book + " to DB!", e);
         } finally {
             if (session != null) {
                 session.close();
@@ -42,6 +43,8 @@ public class BookRepositoryImpl implements BookRepository {
         try (Session session = sessionFactory.openSession()) {
             Query<Book> query = session.createQuery("FROM Book", Book.class);
             return query.getResultList();
+        } catch (HibernateException e) {
+            throw new DataProcessingException("Can't find any books in the DB", e);
         }
     }
 }
