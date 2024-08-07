@@ -1,8 +1,6 @@
 package online.store.book.repository;
 
 import java.util.List;
-
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import online.store.book.model.Book;
 import org.hibernate.HibernateException;
@@ -10,7 +8,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
