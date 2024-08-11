@@ -1,6 +1,8 @@
 package online.store.book.repository;
 
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import online.store.book.exceptions.DataProcessingException;
 import online.store.book.model.Book;
@@ -45,6 +47,17 @@ public class BookRepositoryImpl implements BookRepository {
             return query.getResultList();
         } catch (HibernateException e) {
             throw new DataProcessingException("Can't find any books in the DB", e);
+        }
+    }
+
+    @Override
+    public Optional<Book> findBookById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Book> query = session.createQuery("FROM Book b WHERE b.id = :id", Book.class);
+            query.setParameter("id", id);
+            return Optional.ofNullable(query.getSingleResultOrNull());
+        } catch (HibernateException e) {
+            throw new DataProcessingException("Can't find book with id: " + id + " in the DB", e);
         }
     }
 }
