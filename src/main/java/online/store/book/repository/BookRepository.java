@@ -2,7 +2,6 @@ package online.store.book.repository;
 
 import java.util.List;
 import java.util.Optional;
-
 import online.store.book.model.Book;
 
 public interface BookRepository {
