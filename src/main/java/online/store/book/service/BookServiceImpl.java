@@ -1,7 +1,6 @@
 package online.store.book.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import online.store.book.dto.BookDto;
 import online.store.book.dto.CreateBookRequestDto;
@@ -28,8 +27,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository.getAll()
                 .stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
-
+                .toList();
     }
 
     @Override
