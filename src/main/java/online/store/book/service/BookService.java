@@ -7,7 +7,7 @@ import online.store.book.dto.CreateBookRequestDto;
 public interface BookService {
     BookDto save(CreateBookRequestDto bookRequestDto);
 
-    List<BookDto> getAll();
+    List<BookDto> findAll();
 
     BookDto findBookById(Long id);
 }
