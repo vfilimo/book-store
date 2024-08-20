@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -33,12 +32,6 @@ public class Book {
     private BigDecimal price;
     private String description;
     private String coverImage;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "tinyint")
     private boolean isDeleted = false;
 }
-
-
-
-
-
-
