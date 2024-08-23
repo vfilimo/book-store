@@ -3,6 +3,7 @@ package online.store.book.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.store.book.dto.BookDto;
+import online.store.book.dto.BookSearchParameters;
 import online.store.book.dto.CreateBookRequestDto;
 import online.store.book.service.BookService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +24,11 @@ public class BookController {
     @GetMapping
     public List<BookDto> getAll() {
         return bookService.findAll();
+    }
+
+    @GetMapping("/search")
+    public List<BookDto> search(BookSearchParameters bookSearchParameters) {
+        return bookService.search(bookSearchParameters);
     }
 
     @GetMapping("/{id}")
