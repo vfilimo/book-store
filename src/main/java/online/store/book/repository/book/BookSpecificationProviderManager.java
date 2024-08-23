@@ -1,13 +1,12 @@
 package online.store.book.repository.book;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.store.book.exceptions.SpecificationProviderException;
 import online.store.book.model.Book;
 import online.store.book.repository.SpecificationProvider;
 import online.store.book.repository.SpecificationProviderManager;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -19,6 +18,7 @@ public class BookSpecificationProviderManager implements SpecificationProviderMa
         return specificationProviders.stream()
                 .filter(b -> b.getKey().equals(key))
                 .findFirst()
-                .orElseThrow(() -> new SpecificationProviderException("Can't find correct specification provider for key: " + key));
+                .orElseThrow(() -> new SpecificationProviderException(
+                        "Can't find correct specification provider for key: " + key));
     }
 }
