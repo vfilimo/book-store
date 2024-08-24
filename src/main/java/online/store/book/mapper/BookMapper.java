@@ -8,9 +8,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
     BookDto toDto(Book book);
+
+    List<BookDto> fromEntityListToDtoList(List<Book> books);
 
     Book toEntity(CreateBookRequestDto bookRequestDto);
 
