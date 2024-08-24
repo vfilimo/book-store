@@ -18,12 +18,12 @@ public class BookSpecificationBuilder implements SpecificationBuilder<Book> {
         Specification<Book> specification = Specification.where(null);
         if (bookSearchParameters.authors() != null && bookSearchParameters.authors().length > 0) {
             specification = specification.and(
-                    specificationProviderManager.getSpecificationProvider("authors")
+                    specificationProviderManager.getSpecificationProvider("author")
                     .getSpecification(bookSearchParameters.authors()));
         }
         if (bookSearchParameters.titles() != null && bookSearchParameters.titles().length > 0) {
             specification = specification.and(
-                    specificationProviderManager.getSpecificationProvider("titles")
+                    specificationProviderManager.getSpecificationProvider("title")
                     .getSpecification(bookSearchParameters.titles()));
         }
         return specification;
