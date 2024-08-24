@@ -1,7 +1,5 @@
 package online.store.book;
 
-import online.store.book.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

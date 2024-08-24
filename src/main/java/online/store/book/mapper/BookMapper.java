@@ -1,5 +1,6 @@
 package online.store.book.mapper;
 
+import java.util.List;
 import online.store.book.config.MapperConfig;
 import online.store.book.dto.BookDto;
 import online.store.book.dto.CreateBookRequestDto;
@@ -7,8 +8,6 @@ import online.store.book.model.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
