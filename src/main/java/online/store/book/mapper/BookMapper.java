@@ -1,5 +1,6 @@
 package online.store.book.mapper;
 
+import java.util.List;
 import online.store.book.config.MapperConfig;
 import online.store.book.dto.BookDto;
 import online.store.book.dto.CreateBookRequestDto;
@@ -11,6 +12,8 @@ import org.mapstruct.MappingTarget;
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
     BookDto toDto(Book book);
+
+    List<BookDto> toDto(List<Book> books);
 
     Book toEntity(CreateBookRequestDto bookRequestDto);
 
