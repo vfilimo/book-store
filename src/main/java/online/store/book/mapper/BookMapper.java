@@ -13,7 +13,7 @@ import org.mapstruct.MappingTarget;
 public interface BookMapper {
     BookDto toDto(Book book);
 
-    List<BookDto> fromEntityListToDtoList(List<Book> books);
+    List<BookDto> toDto(List<Book> books);
 
     Book toEntity(CreateBookRequestDto bookRequestDto);
 
