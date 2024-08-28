@@ -7,6 +7,7 @@ import online.store.book.dto.BookDto;
 import online.store.book.dto.BookSearchParameters;
 import online.store.book.dto.CreateBookRequestDto;
 import online.store.book.service.BookService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +24,8 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    public List<BookDto> getAll() {
-        return bookService.findAll();
+    public List<BookDto> getAll(Pageable pageable) {
+        return bookService.findAll(pageable);
     }
 
     @GetMapping("/search")

@@ -8,12 +8,15 @@ import online.store.book.model.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.data.domain.Page;
 
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
     BookDto toDto(Book book);
 
     List<BookDto> toDto(List<Book> books);
+
+    List<BookDto> toDto(Page<Book> books);
 
     Book toEntity(CreateBookRequestDto bookRequestDto);
 
