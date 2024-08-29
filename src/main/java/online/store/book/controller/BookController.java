@@ -39,7 +39,7 @@ public class BookController {
     }
 
     @Operation(summary = "Get all books by search parameters",
-            description = "Get all books by tittle and author")
+            description = "Get all books by title and author")
     @GetMapping("/search")
     public List<BookDto> search(BookSearchParameters bookSearchParameters,
                                 @PageableDefault(size = DEFAULT_PAGE_SIZE, page = DEFAULT_PAGE,
