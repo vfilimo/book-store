@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BookController {
     private static final int DEFAULT_PAGE = 0;
-    private static final int DEFAULT_PAGE_SIZE = 0;
+    private static final int DEFAULT_PAGE_SIZE = 5;
     private static final String DEFAULT_SORT_PARAMETER = "price";
     private final BookService bookService;
 
