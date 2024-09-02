@@ -2,8 +2,8 @@ package online.store.book.mapper;
 
 import java.util.List;
 import online.store.book.config.MapperConfig;
-import online.store.book.dto.BookDto;
-import online.store.book.dto.CreateBookRequestDto;
+import online.store.book.dto.book.BookDto;
+import online.store.book.dto.book.CreateBookRequestDto;
 import online.store.book.model.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

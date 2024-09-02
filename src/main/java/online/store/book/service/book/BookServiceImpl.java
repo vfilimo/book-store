@@ -1,10 +1,10 @@
-package online.store.book.service;
+package online.store.book.service.book;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import online.store.book.dto.BookDto;
-import online.store.book.dto.BookSearchParameters;
-import online.store.book.dto.CreateBookRequestDto;
+import online.store.book.dto.book.BookDto;
+import online.store.book.dto.book.BookSearchParameters;
+import online.store.book.dto.book.CreateBookRequestDto;
 import online.store.book.exceptions.EntityNotFoundException;
 import online.store.book.mapper.BookMapper;
 import online.store.book.model.Book;
