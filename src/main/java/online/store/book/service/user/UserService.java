@@ -5,6 +5,6 @@ import online.store.book.dto.user.UserResponseDto;
 import online.store.book.exceptions.RegistrationException;
 
 public interface UserService {
-    public UserResponseDto register(UserRegistrationRequestDto requestUser)
+    UserResponseDto register(UserRegistrationRequestDto requestUser)
             throws RegistrationException;
 }
