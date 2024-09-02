@@ -1,4 +1,4 @@
-package online.store.book.annotation;
+package online.store.book.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

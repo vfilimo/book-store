@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import online.store.book.dto.book.BookDto;
 import online.store.book.dto.book.BookSearchParameters;
 import online.store.book.dto.book.CreateBookRequestDto;
-import online.store.book.service.BookService;
+import online.store.book.service.book.BookService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;

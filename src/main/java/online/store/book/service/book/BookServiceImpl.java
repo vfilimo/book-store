@@ -1,4 +1,4 @@
-package online.store.book.service;
+package online.store.book.service.book;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
