@@ -22,12 +22,7 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("User with email: "
                     + requestUser.getEmail() + " exists");
         }
-        User user = new User();
-        user.setEmail(requestUser.getEmail());
-        user.setPassword(requestUser.getPassword());
-        user.setFirstName(requestUser.getFirstName());
-        user.setLastName(requestUser.getLastName());
-        user.setShippingAddress(requestUser.getShippingAddress());
+        User user = userMapper.toUserEntity(requestUser);
         return userMapper.toResponseUser(userRepository.save(user));
     }
 }
