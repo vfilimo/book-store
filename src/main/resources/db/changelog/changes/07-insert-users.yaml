@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users
+      author: student
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+              - column:
+                  name: email
+                  value: user@example.com
+              - column:
+                  name: password
+                  value: $2a$10$zFoOVRbOX39EDGXC0endRuqO9hvXIaW/EuP0ZCH0waHL7bIgBZ8uu
+              - column:
+                  name: first_name
+                  value: Taras
+              - column:
+                  name: last_name
+                  value: Ostapenko
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 2
+              - column:
+                  name: email
+                  value: admin@example.com
+              - column:
+                  name: password
+                  value: $2a$10$zFoOVRbOX39EDGXC0endRuqO9hvXIaW/EuP0ZCH0waHL7bIgBZ8uu
+              - column:
+                  name: first_name
+                  value: Ostap
+              - column:
+                  name: last_name
+                  value: Ostapenko
