@@ -15,6 +15,7 @@ databaseChangeLog:
               - column:
                   name: password
                   value: $2a$10$zFoOVRbOX39EDGXC0endRuqO9hvXIaW/EuP0ZCH0waHL7bIgBZ8uu
+                  # value = password
               - column:
                   name: first_name
                   value: Taras
@@ -34,6 +35,7 @@ databaseChangeLog:
               - column:
                   name: password
                   value: $2a$10$zFoOVRbOX39EDGXC0endRuqO9hvXIaW/EuP0ZCH0waHL7bIgBZ8uu
+                  # value = password
               - column:
                   name: first_name
                   value: Ostap
