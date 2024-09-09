@@ -88,15 +88,4 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         body.put("errors", ex.getMessage());
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
-
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Object> handleUsernameNotFoundException(
-            UsernameNotFoundException ex,
-            WebRequest request) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.NOT_FOUND);
-        body.put("errors", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
-    }
 }
