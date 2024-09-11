@@ -3,8 +3,8 @@ package online.store.book.repository.book;
 import lombok.RequiredArgsConstructor;
 import online.store.book.dto.book.BookSearchParameters;
 import online.store.book.model.Book;
-import online.store.book.repository.SpecificationBuilder;
-import online.store.book.repository.SpecificationProviderManager;
+import online.store.book.repository.specification.SpecificationBuilder;
+import online.store.book.repository.specification.SpecificationProviderManager;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 

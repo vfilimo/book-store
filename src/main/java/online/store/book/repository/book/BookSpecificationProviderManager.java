@@ -4,8 +4,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.store.book.exceptions.SpecificationProviderException;
 import online.store.book.model.Book;
-import online.store.book.repository.SpecificationProvider;
-import online.store.book.repository.SpecificationProviderManager;
+import online.store.book.repository.specification.SpecificationProvider;
+import online.store.book.repository.specification.SpecificationProviderManager;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
