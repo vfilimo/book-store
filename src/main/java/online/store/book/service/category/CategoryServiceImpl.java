@@ -8,6 +8,7 @@ import online.store.book.exceptions.EntityNotFoundException;
 import online.store.book.mapper.CategoryMapper;
 import online.store.book.model.Category;
 import online.store.book.repository.CategoryRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,8 +18,8 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryDto> findAll() {
-        return categoryMapper.toDto(categoryRepository.findAll());
+    public List<CategoryDto> findAll(Pageable pageable) {
+        return categoryMapper.toDto(categoryRepository.findAll(pageable));
     }
 
     @Override

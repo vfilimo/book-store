@@ -8,12 +8,13 @@ import online.store.book.model.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.data.domain.Page;
 
 @Mapper(config = MapperConfig.class)
 public interface CategoryMapper {
     CategoryDto toDto(Category category);
 
-    List<CategoryDto> toDto(List<Category> categories);
+    List<CategoryDto> toDto(Page<Category> categories);
 
     Category toEntity(CreteCategoryRequestDto creteCategoryRequestDto);
 

@@ -3,9 +3,10 @@ package online.store.book.service.category;
 import java.util.List;
 import online.store.book.dto.category.CategoryDto;
 import online.store.book.dto.category.CreteCategoryRequestDto;
+import org.springframework.data.domain.Pageable;
 
 public interface CategoryService {
-    List<CategoryDto> findAll();
+    List<CategoryDto> findAll(Pageable pageable);
 
     CategoryDto findById(Long id);
 
