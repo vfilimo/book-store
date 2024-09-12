@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import online.store.book.dto.book.BookDto;
+import online.store.book.dto.book.BookDtoWithoutCategoryIds;
 import online.store.book.dto.category.CategoryDto;
-import online.store.book.dto.category.CreteCategoryRequestDto;
+import online.store.book.dto.category.CreateCategoryRequestDto;
 import online.store.book.service.book.BookService;
 import online.store.book.service.category.CategoryService;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +38,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public CategoryDto createCategory(
-            @RequestBody @Valid CreteCategoryRequestDto categoryRequestDto) {
+            @RequestBody @Valid CreateCategoryRequestDto categoryRequestDto) {
         return categoryService.save(categoryRequestDto);
     }
 
@@ -48,7 +48,7 @@ public class CategoryController {
     @PutMapping("/{id}")
     public CategoryDto updateCategory(
             @PathVariable Long id,
-            @RequestBody @Valid CreteCategoryRequestDto categoryRequestDto) {
+            @RequestBody @Valid CreateCategoryRequestDto categoryRequestDto) {
         return categoryService.update(id, categoryRequestDto);
     }
 
@@ -81,7 +81,7 @@ public class CategoryController {
             description = "Find all books by category. Sort by id")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{id}/books")
-    public List<BookDto> getBooksByCategoryId(
+    public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(
             @PathVariable Long id,
             @PageableDefault(size = DEFAULT_PAGE_SIZE, page = DEFAULT_PAGE,
                     sort = DEFAULT_SORT_PARAMETER) Pageable pageable) {

@@ -3,7 +3,7 @@ package online.store.book.mapper;
 import java.util.List;
 import online.store.book.config.MapperConfig;
 import online.store.book.dto.category.CategoryDto;
-import online.store.book.dto.category.CreteCategoryRequestDto;
+import online.store.book.dto.category.CreateCategoryRequestDto;
 import online.store.book.model.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,9 +16,9 @@ public interface CategoryMapper {
 
     List<CategoryDto> toDto(Page<Category> categories);
 
-    Category toEntity(CreteCategoryRequestDto creteCategoryRequestDto);
+    Category toEntity(CreateCategoryRequestDto createCategoryRequestDto);
 
     @Mapping(target = "id", ignore = true)
     void updateCategoryFromDto(
-            CreteCategoryRequestDto categoryRequestDto, @MappingTarget Category category);
+            CreateCategoryRequestDto categoryRequestDto, @MappingTarget Category category);
 }

@@ -3,7 +3,7 @@ package online.store.book.service.category;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.store.book.dto.category.CategoryDto;
-import online.store.book.dto.category.CreteCategoryRequestDto;
+import online.store.book.dto.category.CreateCategoryRequestDto;
 import online.store.book.exceptions.EntityNotFoundException;
 import online.store.book.mapper.CategoryMapper;
 import online.store.book.model.Category;
@@ -31,13 +31,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto save(CreteCategoryRequestDto categoryRequestDto) {
+    public CategoryDto save(CreateCategoryRequestDto categoryRequestDto) {
         Category category = categoryMapper.toEntity(categoryRequestDto);
         return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Override
-    public CategoryDto update(Long id, CreteCategoryRequestDto categoryRequestDto) {
+    public CategoryDto update(Long id, CreateCategoryRequestDto categoryRequestDto) {
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find category with id: " + id));
         categoryMapper.updateCategoryFromDto(categoryRequestDto, category);
