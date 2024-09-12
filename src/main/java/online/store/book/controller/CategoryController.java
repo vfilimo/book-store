@@ -22,16 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/*
-
-
-
-
-
-public List getBooksByCategoryId(Long id) (endpoint: "/{id}/books")
-
- */
-
 @Tag(name = "Categories management")
 @RestController
 @RequestMapping("/categories")
