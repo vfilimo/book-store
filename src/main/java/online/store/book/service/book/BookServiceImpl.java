@@ -3,6 +3,7 @@ package online.store.book.service.book;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.store.book.dto.book.BookDto;
+import online.store.book.dto.book.BookDtoWithoutCategoryIds;
 import online.store.book.dto.book.BookSearchParameters;
 import online.store.book.dto.book.CreateBookRequestDto;
 import online.store.book.exceptions.EntityNotFoundException;
@@ -57,5 +58,11 @@ public class BookServiceImpl implements BookService {
     public List<BookDto> search(BookSearchParameters bookSearchParameters, Pageable pageable) {
         Specification<Book> bookSpecification = specificationBuilder.build(bookSearchParameters);
         return bookMapper.toDto(bookRepository.findAll(bookSpecification, pageable));
+    }
+
+    @Override
+    public List<BookDtoWithoutCategoryIds> findAllByCategoryId(Long id, Pageable pageable) {
+        return bookMapper.toDtoWithoutCategoryIds(
+                bookRepository.findAllByCategoryId(id, pageable));
     }
 }
