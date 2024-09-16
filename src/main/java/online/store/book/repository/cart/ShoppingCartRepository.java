@@ -1,6 +1,5 @@
 package online.store.book.repository.cart;
 
-import jakarta.transaction.Transactional;
 import java.util.Optional;
 import online.store.book.model.ShoppingCart;
 import org.springframework.data.jpa.repository.EntityGraph;

@@ -1,8 +1,6 @@
 package online.store.book.service.cart;
 
-import jakarta.persistence.FetchType;
 import jakarta.transaction.Transactional;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import online.store.book.dto.cart.CartItemRequestDto;
 import online.store.book.dto.cart.CartItemResponseDto;
@@ -14,7 +12,6 @@ import online.store.book.model.CartItem;
 import online.store.book.model.ShoppingCart;
 import online.store.book.repository.cart.ShoppingCartItemRepository;
 import online.store.book.repository.cart.ShoppingCartRepository;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,8 +24,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartResponseDto getShoppingCart(String email) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findAllFieldsByUserEmail(email).orElseThrow(
-                () -> new EntityNotFoundException("User: " + email + " doesn't have shopping cart")
+        ShoppingCart shoppingCart = shoppingCartRepository.findAllFieldsByUserEmail(email)
+                .orElseThrow(
+                    () -> new EntityNotFoundException("User: "
+                            + email + " doesn't have shopping cart")
         );
         return shoppingCartMapper.toDto(shoppingCart);
     }
@@ -43,7 +42,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItem.setShoppingCart(shoppingCart);
         CartItem savedCartItem = shoppingCartItemRepository.save(cartItem);
         Long id = savedCartItem.getId();
-        CartItem item = shoppingCartItemRepository.findByShoppingCartIdAndItemId(shoppingCart.getId(), id).orElseThrow();
+        CartItem item = shoppingCartItemRepository
+                .findByShoppingCartIdAndItemId(shoppingCart.getId(), id).orElseThrow();
         return shoppingCartItemMapper.toDto(item);
     }
 
