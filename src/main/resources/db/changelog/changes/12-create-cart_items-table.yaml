@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 2
+      id: create-cart_items-table
       author: user
       changes:
         - createTable:
@@ -33,7 +33,7 @@ databaseChangeLog:
             baseColumnNames: shopping_cart_id
             constraintName: fk_cart_items_shopping_cart
             referencedTableName: shopping_carts
-            referencedColumnNames: id
+            referencedColumnNames: user_id
             onDelete: CASCADE
         - addForeignKeyConstraint:
             baseTableName: cart_items
