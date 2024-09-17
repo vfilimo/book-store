@@ -1,14 +1,14 @@
 package online.store.book.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import online.store.book.dto.cart.CartItemRequestDto;
-import online.store.book.dto.cart.CartItemResponseDto;
 import online.store.book.dto.cart.ShoppingCartResponseDto;
 import online.store.book.model.User;
 import online.store.book.service.cart.ShoppingCartService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,26 +27,36 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
 
-    @Transactional
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Add Book to you shopping cart")
     @PostMapping
-    public CartItemResponseDto addBook(@RequestBody @Valid CartItemRequestDto cartItemRequestDto) {
+    public ShoppingCartResponseDto addBook(
+            @RequestBody @Valid CartItemRequestDto cartItemRequestDto) {
         String email = getEmailFromContext();
         return shoppingCartService.addBook(email, cartItemRequestDto);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Shows all items in you shopping cart")
     @GetMapping
     public ShoppingCartResponseDto get() {
         String email = getEmailFromContext();
         return shoppingCartService.getShoppingCart(email);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Update you cart item",
+            description = "You can update the quantity of your books")
     @PutMapping("/items/{cartItemId}")
-    public CartItemResponseDto updateCartItem(
+    public ShoppingCartResponseDto updateCartItem(
             @PathVariable Long cartItemId, @RequestBody int quantity) {
         String email = getEmailFromContext();
         return shoppingCartService.updateShoppingCart(email, cartItemId, quantity);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Delete cart item from you shopping cart",
+            description = "You can delete book from you shopping cart")
     @DeleteMapping("/items/{cartItemId}")
     public void deleteCartItem(@PathVariable Long cartItemId) {
         String email = getEmailFromContext();
