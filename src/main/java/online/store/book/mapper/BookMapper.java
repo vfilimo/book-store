@@ -1,7 +1,6 @@
 package online.store.book.mapper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import online.store.book.config.MapperConfig;
@@ -14,7 +13,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 import org.springframework.data.domain.Page;
 
 @Mapper(config = MapperConfig.class)
@@ -51,11 +49,4 @@ public interface BookMapper {
     void updateBookFromDto(CreateBookRequestDto bookRequestDto, @MappingTarget Book book);
 
     BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);
-
-    @Named("bookFromId")
-    default Book bookFromId(Long id) {
-        return Optional.ofNullable(id)
-                .map(Book::new)
-                .orElse(null);
-    }
 }
