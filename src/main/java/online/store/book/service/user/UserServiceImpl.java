@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.toUserEntity(requestUser);
         user.setPassword(passwordEncoder.encode(requestUser.getPassword()));
-        Role roleUser = roleRepository.findByRoleName(Role.RoleName.ROLE_USER);
+        Role roleUser = roleRepository.findByName(Role.RoleName.ROLE_USER);
         user.setRoles(Set.of(roleUser));
         User userFromDb = userRepository.save(user);
         ShoppingCart shoppingCart = new ShoppingCart();
