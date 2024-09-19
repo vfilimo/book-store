@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import online.store.book.dto.cart.CartItemRequestDto;
 import online.store.book.dto.cart.ShoppingCartResponseDto;
+import online.store.book.dto.cart.UpdateCartItemRequestDto;
 import online.store.book.model.User;
 import online.store.book.service.cart.ShoppingCartService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,16 +33,16 @@ public class ShoppingCartController {
     @PostMapping
     public ShoppingCartResponseDto addBook(
             @RequestBody @Valid CartItemRequestDto cartItemRequestDto) {
-        String email = getEmailFromContext();
-        return shoppingCartService.addBook(email, cartItemRequestDto);
+        User user = getUserFromContext();
+        return shoppingCartService.addBook(user, cartItemRequestDto);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Shows all items in you shopping cart")
     @GetMapping
     public ShoppingCartResponseDto get() {
-        String email = getEmailFromContext();
-        return shoppingCartService.getShoppingCart(email);
+        User user = getUserFromContext();
+        return shoppingCartService.getShoppingCart(user);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -49,9 +50,10 @@ public class ShoppingCartController {
             description = "You can update the quantity of your books")
     @PutMapping("/items/{cartItemId}")
     public ShoppingCartResponseDto updateCartItem(
-            @PathVariable Long cartItemId, @RequestBody int quantity) {
-        String email = getEmailFromContext();
-        return shoppingCartService.updateShoppingCart(email, cartItemId, quantity);
+            @PathVariable Long cartItemId,
+            @RequestBody @Valid UpdateCartItemRequestDto updateCartItem) {
+        User user = getUserFromContext();
+        return shoppingCartService.updateShoppingCart(user, cartItemId, updateCartItem);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -59,13 +61,12 @@ public class ShoppingCartController {
             description = "You can delete book from you shopping cart")
     @DeleteMapping("/items/{cartItemId}")
     public void deleteCartItem(@PathVariable Long cartItemId) {
-        String email = getEmailFromContext();
-        shoppingCartService.delete(email, cartItemId);
+        User user = getUserFromContext();
+        shoppingCartService.delete(user, cartItemId);
     }
 
-    private String getEmailFromContext() {
+    private User getUserFromContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        return user.getEmail();
+        return (User) authentication.getPrincipal();
     }
 }
