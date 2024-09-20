@@ -1,5 +1,7 @@
 package online.store.book.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,8 @@ import online.store.book.dto.order.OrderUpdateRequestDto;
 import online.store.book.model.User;
 import online.store.book.service.order.OrderService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,38 +24,52 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Order management")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
 public class OrderController {
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_PAGE_SIZE = 5;
+    private static final String DEFAULT_SORT_PARAMETER = "id";
     private final OrderService orderService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Create new order by you shopping cart",
+        description = "After placing an order, your shopping cart will be cleared")
     @PostMapping
     OrderResponseDto placeOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
         User user = getUserFromContext();
         return orderService.saveOrder(user, orderRequestDto);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
-    List<OrderResponseDto> getAllOrders(Pageable pageable) {
+    List<OrderResponseDto> getAllOrders(@PageableDefault(size = DEFAULT_PAGE_SIZE,
+            page = DEFAULT_PAGE, sort = DEFAULT_SORT_PARAMETER) Pageable pageable) {
         User user = getUserFromContext();
         return orderService.getOrders(user, pageable);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}")
     OrderResponseDto updateOrderStatus(
             @PathVariable Long id,
             @RequestBody @Valid OrderUpdateRequestDto orderUpdateRequestDto) {
-        User user = getUserFromContext();
-        return orderService.updateOrderStatus(user, orderUpdateRequestDto);
+        return orderService.updateOrderStatus(id, orderUpdateRequestDto);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{orderId}/items")
-    List<OrderItemResponseDto> getSpecificOrder(@PathVariable Long orderId, Pageable pageable) {
+    List<OrderItemResponseDto> getSpecificOrder(
+            @PathVariable Long orderId,
+            @PageableDefault(size = DEFAULT_PAGE_SIZE, page = DEFAULT_PAGE,
+                    sort = DEFAULT_SORT_PARAMETER) Pageable pageable) {
         User user = getUserFromContext();
         return orderService.getOrderById(user, orderId, pageable);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("{orderId}/items/{itemId}")
     OrderItemResponseDto getSpecificOrderItem(
             @PathVariable Long orderId, @PathVariable Long itemId) {
