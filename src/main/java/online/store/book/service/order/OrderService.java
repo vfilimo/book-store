@@ -13,7 +13,7 @@ public interface OrderService {
 
     List<OrderResponseDto> getOrders(User user, Pageable pageable);
 
-    OrderResponseDto updateOrderStatus(User user, OrderUpdateRequestDto orderUpdateRequestDto);
+    OrderResponseDto updateOrderStatus(Long orderId, OrderUpdateRequestDto orderUpdateRequestDto);
 
     List<OrderItemResponseDto> getOrderById(User user, Long orderId, Pageable pageable);
 
