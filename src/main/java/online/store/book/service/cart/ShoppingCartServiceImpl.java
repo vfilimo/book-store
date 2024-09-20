@@ -26,22 +26,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @ReadOnlyProperty
     @Override
     public ShoppingCartResponseDto getShoppingCart(User user) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId())
-                .orElseThrow(
-                        () -> new EntityNotFoundException("User: "
-                                + user.getEmail() + " doesn't have shopping cart")
-                );
+        ShoppingCart shoppingCart = findShoppingCartByUser(user);
         return shoppingCartMapper.toDto(shoppingCart);
     }
 
     @Transactional
     @Override
     public ShoppingCartResponseDto addBook(User user, CartItemRequestDto cartItemRequestDto) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId())
-                .orElseThrow(
-                        () -> new EntityNotFoundException("User: "
-                                + user.getEmail() + " doesn't have shopping cart")
-                );
+        ShoppingCart shoppingCart = findShoppingCartByUser(user);
         shoppingCart.getCartItems().stream()
                 .filter(item -> item.getBook().getId().equals(cartItemRequestDto.getBookId()))
                 .findFirst()
@@ -56,10 +48,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartResponseDto updateShoppingCart(User user, Long cartItemId,
                                                       UpdateCartItemRequestDto updateCartItem) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId())
-                .orElseThrow(
-                        () -> new EntityNotFoundException("User: "
-                                + user.getEmail() + " doesn't have shopping cart"));
+        ShoppingCart shoppingCart = findShoppingCartByUser(user);
         CartItem cartItem = shoppingCart.getCartItems().stream()
                 .filter(item -> item.getId().equals(cartItemId))
                 .findFirst()
@@ -73,11 +62,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional
     @Override
     public void delete(User user, Long cartItemId) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId())
-                .orElseThrow(
-                        () -> new EntityNotFoundException("User: "
-                                + user.getEmail() + " doesn't have shopping cart"
-                        ));
+        ShoppingCart shoppingCart = findShoppingCartByUser(user);
         CartItem cartItem = shoppingCart.getCartItems().stream()
                 .filter(item -> item.getId().equals(cartItemId))
                 .findFirst()
@@ -98,5 +83,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItem.setQuantity(cartItemRequestDto.getQuantity());
         cartItem.setShoppingCart(shoppingCart);
         shoppingCart.getCartItems().add(cartItem);
+    }
+
+    private ShoppingCart findShoppingCartByUser(User user) {
+        return shoppingCartRepository.findByUserId(user.getId())
+                .orElseThrow(
+                        () -> new EntityNotFoundException("User: "
+                                + user.getEmail() + " doesn't have shopping cart")
+                );
     }
 }
