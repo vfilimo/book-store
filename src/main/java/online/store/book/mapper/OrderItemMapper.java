@@ -20,7 +20,8 @@ public interface OrderItemMapper {
 
     @Mappings({
             @Mapping(target = "order", source = "order"),
-            @Mapping(target = "price", source = "cartItem.book.price")
+            @Mapping(target = "price", source = "cartItem.book.price"),
+            @Mapping(target = "id", ignore = true)
     })
     OrderItem toOrderItem(CartItem cartItem, Order order);
 }
