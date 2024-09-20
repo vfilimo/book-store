@@ -36,7 +36,7 @@ public class OrderController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Create new order by you shopping cart",
-        description = "After placing an order, your shopping cart will be cleared")
+            description = "After placing an order, your shopping cart will be cleared")
     @PostMapping
     OrderResponseDto placeOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
         User user = getUserFromContext();
@@ -44,6 +44,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Get order history")
     @GetMapping
     List<OrderResponseDto> getAllOrders(@PageableDefault(size = DEFAULT_PAGE_SIZE,
             page = DEFAULT_PAGE, sort = DEFAULT_SORT_PARAMETER) Pageable pageable) {
@@ -51,6 +52,7 @@ public class OrderController {
         return orderService.getOrders(user, pageable);
     }
 
+    @Operation(summary = "Update order status", description = "Only for Admin role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}")
     OrderResponseDto updateOrderStatus(
@@ -59,6 +61,7 @@ public class OrderController {
         return orderService.updateOrderStatus(id, orderUpdateRequestDto);
     }
 
+    @Operation(summary = "Find specific order by order id")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{orderId}/items")
     List<OrderItemResponseDto> getSpecificOrder(
@@ -69,6 +72,7 @@ public class OrderController {
         return orderService.getOrderById(user, orderId, pageable);
     }
 
+    @Operation(summary = "Find specific order item by id and order id")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("{orderId}/items/{itemId}")
     OrderItemResponseDto getSpecificOrderItem(
