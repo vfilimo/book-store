@@ -10,6 +10,7 @@ import online.store.book.dto.order.OrderItemResponseDto;
 import online.store.book.dto.order.OrderRequestDto;
 import online.store.book.dto.order.OrderResponseDto;
 import online.store.book.dto.order.OrderUpdateRequestDto;
+import online.store.book.exceptions.EmptyCartException;
 import online.store.book.exceptions.EntityNotFoundException;
 import online.store.book.mapper.OrderItemMapper;
 import online.store.book.mapper.OrderMapper;
@@ -87,14 +88,25 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(Order.Status.PENDING);
         order.setOrderDate(LocalDateTime.now());
         order.setShippingAddress(orderRequestDto.shippingAddress());
-        Set<OrderItem> orderItems = shoppingCart.getCartItems().stream()
-                .map(item -> orderItemMapper.toOrderItem(item, order))
-                .collect(Collectors.toSet());
+        Set<OrderItem> orderItems = mapCartItemsToOrderItems(shoppingCart, order);
         order.setOrderItems(orderItems);
-        BigDecimal totalPrice = order.getOrderItems().stream()
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalPrice = calculateTotalPrice(order.getOrderItems());
         order.setTotal(totalPrice);
         return order;
+    }
+
+    private BigDecimal calculateTotalPrice(Set<OrderItem> orderItems) {
+        return orderItems.stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private Set<OrderItem> mapCartItemsToOrderItems(ShoppingCart shoppingCart, Order order) {
+        if (shoppingCart.getCartItems().isEmpty()) {
+            throw new EmptyCartException("Can't create an order with an empty shopping cart");
+        }
+        return shoppingCart.getCartItems().stream()
+                .map(item -> orderItemMapper.toOrderItem(item, order))
+                .collect(Collectors.toSet());
     }
 }
