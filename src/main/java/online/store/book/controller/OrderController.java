@@ -38,7 +38,7 @@ public class OrderController {
     @Operation(summary = "Create new order by you shopping cart",
             description = "After placing an order, your shopping cart will be cleared")
     @PostMapping
-    OrderResponseDto placeOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
+    public OrderResponseDto placeOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
         User user = getUserFromContext();
         return orderService.saveOrder(user, orderRequestDto);
     }
@@ -46,7 +46,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Get order history")
     @GetMapping
-    List<OrderResponseDto> getAllOrders(@PageableDefault(size = DEFAULT_PAGE_SIZE,
+    public List<OrderResponseDto> getAllOrders(@PageableDefault(size = DEFAULT_PAGE_SIZE,
             page = DEFAULT_PAGE, sort = DEFAULT_SORT_PARAMETER) Pageable pageable) {
         User user = getUserFromContext();
         return orderService.getOrders(user, pageable);
@@ -55,7 +55,7 @@ public class OrderController {
     @Operation(summary = "Update order status", description = "Only for Admin role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}")
-    OrderResponseDto updateOrderStatus(
+    public OrderResponseDto updateOrderStatus(
             @PathVariable Long id,
             @RequestBody @Valid OrderUpdateRequestDto orderUpdateRequestDto) {
         return orderService.updateOrderStatus(id, orderUpdateRequestDto);
@@ -64,7 +64,7 @@ public class OrderController {
     @Operation(summary = "Find specific order by order id")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{orderId}/items")
-    List<OrderItemResponseDto> getSpecificOrder(
+    public List<OrderItemResponseDto> getSpecificOrder(
             @PathVariable Long orderId,
             @PageableDefault(size = DEFAULT_PAGE_SIZE, page = DEFAULT_PAGE,
                     sort = DEFAULT_SORT_PARAMETER) Pageable pageable) {
@@ -75,7 +75,7 @@ public class OrderController {
     @Operation(summary = "Find specific order item by id and order id")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("{orderId}/items/{itemId}")
-    OrderItemResponseDto getSpecificOrderItem(
+    public OrderItemResponseDto getSpecificOrderItem(
             @PathVariable Long orderId, @PathVariable Long itemId) {
         User user = getUserFromContext();
         return orderService.getOrderItemById(user, orderId, itemId);
