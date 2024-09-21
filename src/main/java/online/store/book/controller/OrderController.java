@@ -64,10 +64,7 @@ public class OrderController {
     @Operation(summary = "Find specific order by order id")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{orderId}/items")
-    public List<OrderItemResponseDto> getSpecificOrder(
-            @PathVariable Long orderId,
-            @PageableDefault(size = DEFAULT_PAGE_SIZE, page = DEFAULT_PAGE,
-                    sort = DEFAULT_SORT_PARAMETER) Pageable pageable) {
+    public List<OrderItemResponseDto> getSpecificOrder(@PathVariable Long orderId) {
         User user = getUserFromContext();
         return orderService.getOrderById(user.getId(), orderId);
     }
