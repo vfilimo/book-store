@@ -18,6 +18,7 @@ import online.store.book.model.OrderItem;
 import online.store.book.model.ShoppingCart;
 import online.store.book.model.User;
 import online.store.book.repository.cart.ShoppingCartRepository;
+import online.store.book.repository.order.OrderItemRepository;
 import online.store.book.repository.order.OrderRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     public OrderResponseDto saveOrder(User user, OrderRequestDto orderRequestDto) {
@@ -37,6 +39,39 @@ public class OrderServiceImpl implements OrderService {
         shoppingCart.getCartItems().clear();
         shoppingCartRepository.save(shoppingCart);
         return orderMapper.toDto(orderRepository.save(order));
+    }
+
+    @Override
+    public List<OrderResponseDto> getOrders(Long userId, Pageable pageable) {
+        return orderMapper.toDto(orderRepository.findAllByUserId(userId, pageable));
+    }
+
+    @Override
+    public OrderResponseDto updateOrderStatus(
+            Long orderId, OrderUpdateRequestDto orderUpdateRequestDto) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find order with id: " + orderId));
+        order.setStatus(orderUpdateRequestDto.status());
+        return orderMapper.toDto(orderRepository.save(order));
+    }
+
+    @Override
+    public List<OrderItemResponseDto> getOrderById(Long userId, Long orderId) {
+        Order order = orderRepository.findByIdAndUserId(orderId, userId).orElseThrow(
+                () -> new EntityNotFoundException(String.format(
+                        "You don't have order with id: %d", orderId)));
+        return orderItemMapper.toDto(order.getOrderItems());
+    }
+
+    @Override
+    public OrderItemResponseDto getOrderItemById(Long userId, Long orderId, Long itemId) {
+        OrderItem item = orderItemRepository.findByIdAndOrderIdAndUserId(userId, orderId, itemId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(
+                        "You don't have order item with id: %d in order with id: %d",
+                        itemId, orderId))
+                );
+        return orderItemMapper.toDto(item);
     }
 
     private ShoppingCart getShoppingCartByUser(User user) {
@@ -61,37 +96,5 @@ public class OrderServiceImpl implements OrderService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setTotal(totalPrice);
         return order;
-    }
-
-    @Override
-    public List<OrderResponseDto> getOrders(User user, Pageable pageable) {
-        return orderMapper.toDto(orderRepository.findByUserId(user.getId(), pageable));
-    }
-
-    @Override
-    public OrderResponseDto updateOrderStatus(
-            Long orderId, OrderUpdateRequestDto orderUpdateRequestDto) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find order with id: " + orderId));
-        order.setStatus(orderUpdateRequestDto.status());
-        return orderMapper.toDto(orderRepository.save(order));
-    }
-
-    @Override
-    public List<OrderItemResponseDto> getOrderById(User user, Long orderId, Pageable pageable) {
-        return orderItemMapper.toDto(
-                orderRepository.findItemsById(user.getId(), orderId, pageable));
-    }
-
-    @Override
-    public OrderItemResponseDto getOrderItemById(User user, Long orderId, Long itemId) {
-        OrderItem orderItem = orderRepository.findItemById(user.getId(), orderId, itemId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException(String.format(
-                                "You don't have order item with id: %d in order with id: %d",
-                                itemId, orderId))
-                );
-        return orderItemMapper.toDto(orderItem);
     }
 }

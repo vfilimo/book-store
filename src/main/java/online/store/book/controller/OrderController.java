@@ -49,7 +49,7 @@ public class OrderController {
     public List<OrderResponseDto> getAllOrders(@PageableDefault(size = DEFAULT_PAGE_SIZE,
             page = DEFAULT_PAGE, sort = DEFAULT_SORT_PARAMETER) Pageable pageable) {
         User user = getUserFromContext();
-        return orderService.getOrders(user, pageable);
+        return orderService.getOrders(user.getId(), pageable);
     }
 
     @Operation(summary = "Update order status", description = "Only for Admin role")
@@ -69,7 +69,7 @@ public class OrderController {
             @PageableDefault(size = DEFAULT_PAGE_SIZE, page = DEFAULT_PAGE,
                     sort = DEFAULT_SORT_PARAMETER) Pageable pageable) {
         User user = getUserFromContext();
-        return orderService.getOrderById(user, orderId, pageable);
+        return orderService.getOrderById(user.getId(), orderId);
     }
 
     @Operation(summary = "Find specific order item by id and order id")
@@ -78,7 +78,7 @@ public class OrderController {
     public OrderItemResponseDto getSpecificOrderItem(
             @PathVariable Long orderId, @PathVariable Long itemId) {
         User user = getUserFromContext();
-        return orderService.getOrderItemById(user, orderId, itemId);
+        return orderService.getOrderItemById(user.getId(), orderId, itemId);
     }
 
     private User getUserFromContext() {

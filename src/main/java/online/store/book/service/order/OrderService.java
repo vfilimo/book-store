@@ -11,11 +11,11 @@ import org.springframework.data.domain.Pageable;
 public interface OrderService {
     OrderResponseDto saveOrder(User user, OrderRequestDto orderRequestDto);
 
-    List<OrderResponseDto> getOrders(User user, Pageable pageable);
+    List<OrderResponseDto> getOrders(Long userId, Pageable pageable);
 
     OrderResponseDto updateOrderStatus(Long orderId, OrderUpdateRequestDto orderUpdateRequestDto);
 
-    List<OrderItemResponseDto> getOrderById(User user, Long orderId, Pageable pageable);
+    List<OrderItemResponseDto> getOrderById(Long userId, Long orderId);
 
-    OrderItemResponseDto getOrderItemById(User user, Long orderId, Long itemId);
+    OrderItemResponseDto getOrderItemById(Long userId, Long orderId, Long itemId);
 }
