@@ -10,7 +10,7 @@ import online.store.book.dto.order.OrderItemResponseDto;
 import online.store.book.dto.order.OrderRequestDto;
 import online.store.book.dto.order.OrderResponseDto;
 import online.store.book.dto.order.OrderUpdateRequestDto;
-import online.store.book.exceptions.EmptyCartException;
+import online.store.book.exceptions.OrderProcessingException;
 import online.store.book.exceptions.EntityNotFoundException;
 import online.store.book.mapper.OrderItemMapper;
 import online.store.book.mapper.OrderMapper;
@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
 
     private Set<OrderItem> mapCartItemsToOrderItems(ShoppingCart shoppingCart, Order order) {
         if (shoppingCart.getCartItems().isEmpty()) {
-            throw new EmptyCartException("Can't create an order with an empty shopping cart");
+            throw new OrderProcessingException("Can't create an order with an empty shopping cart");
         }
         return shoppingCart.getCartItems().stream()
                 .map(item -> orderItemMapper.toOrderItem(item, order))

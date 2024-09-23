@@ -88,9 +88,9 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(EmptyCartException.class)
+    @ExceptionHandler(OrderProcessingException.class)
     public ResponseEntity<Object> handleEmptyCartException(
-            EmptyCartException ex,
+            OrderProcessingException ex,
             WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
