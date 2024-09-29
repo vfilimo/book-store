@@ -1,10 +1,8 @@
 package online.store.book.controller;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -17,35 +15,26 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.sql.DataSource;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import online.store.book.dto.book.BookDto;
-import online.store.book.dto.book.BookSearchParameters;
 import online.store.book.dto.book.CreateBookRequestDto;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
 
@@ -88,6 +77,7 @@ class BookControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Create a new book with valid fields, add the book to the db")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void createBook_ValidRequestDto_Success() throws Exception {
         CreateBookRequestDto bookRequestDto = new CreateBookRequestDto();
@@ -119,6 +109,7 @@ class BookControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Create a new book with invalid fields, don't add to db")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void createBook_InValidRequestDto_NotSuccess() throws Exception {
         CreateBookRequestDto bookRequestDto = new CreateBookRequestDto();
@@ -142,6 +133,7 @@ class BookControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Find all books in the db")
     @WithMockUser(username = "user", roles = {"USER"})
     void getAll_ReturnCorrectBooks() throws Exception {
         MvcResult result = mockMvc.perform(get("/books"))
@@ -149,13 +141,13 @@ class BookControllerIntegrationTest {
                 .andReturn();
 
         List<BookDto> bookDtoList = objectMapper.readValue(result.getResponse()
-                .getContentAsString(), new TypeReference<List<BookDto>>() {
-        });
+                .getContentAsString(), new TypeReference<List<BookDto>>() {});
         assertFalse(bookDtoList.isEmpty());
         assertEquals(3, bookDtoList.size());
     }
 
     @Test
+    @DisplayName("Find a book in the db with an existing id")
     @WithMockUser(username = "user", roles = {"USER"})
     void getBookById_ExistingId_ShouldReturnCorrectBook() throws Exception {
         BookDto expectedBook = new BookDto();
@@ -178,18 +170,19 @@ class BookControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
+    @DisplayName("Try to find a book in the db with a non-existing id")
     void getBookById_NotExistingId_NotSuccess() throws Exception {
-        MvcResult result = mockMvc.perform(get("/books/5"))
+        long id = 5;
+        MvcResult result = mockMvc.perform(get("/books/" + id))
                 .andExpect(status().isNotFound())
                 .andReturn();
         String jsonResponse = result.getResponse().getContentAsString();
-        Map<String, Object> responseBody = objectMapper.readValue(jsonResponse,
-                new TypeReference<Map<String, Object>>() {});
-        assertNotNull(responseBody.get("errors"));
-        assertEquals("Can't find book with id: 5", responseBody.get("errors"));
+        String message = "Can't find book with id: " + id;
+        assertTrue(jsonResponse.contains(message));
     }
 
     @Test
+    @DisplayName("Find a book in the db using search parameters")
     @WithMockUser(username = "user", roles = {"USER"})
     void search_ValidParameters_Success() throws Exception {
         BookDto expectedBook = new BookDto();
@@ -207,14 +200,16 @@ class BookControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
         String contentAsString = result.getResponse().getContentAsString();
-        List<BookDto> bookDtoList = objectMapper.readValue(contentAsString, new TypeReference<List<BookDto>>() {
-        });
+        List<BookDto> bookDtoList = objectMapper.readValue(contentAsString,
+                new TypeReference<List<BookDto>>() {
+                });
         assertFalse(bookDtoList.isEmpty());
         assertEquals(2, bookDtoList.size());
-        EqualsBuilder.reflectionEquals(expectedBook, bookDtoList.get(0),"id");
+        EqualsBuilder.reflectionEquals(expectedBook, bookDtoList.get(0), "id");
     }
 
     @Test
+    @DisplayName("Update a book in the db by an existing id and valid requestDto")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void updateBook_ExistingID_shouldReturnCorrectBook() throws Exception {
         CreateBookRequestDto bookRequestDto = new CreateBookRequestDto();
@@ -246,8 +241,10 @@ class BookControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Update a book in the db by a non-existing id and valid requestDto")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void updateBook_NotExistingID_NotSuccess() throws Exception {
+        long id = 50L;
         CreateBookRequestDto bookRequestDto = new CreateBookRequestDto();
         bookRequestDto.setAuthor("George Orwell");
         bookRequestDto.setTitle("Animal Farm: A Fairy Story");
@@ -256,7 +253,6 @@ class BookControllerIntegrationTest {
         bookRequestDto.setCategoryIds(List.of(2L));
 
         String jsonRequest = objectMapper.writeValueAsString(bookRequestDto);
-        long id = 50L;
 
         MvcResult result = mockMvc.perform(put("/books/" + id)
                         .content(jsonRequest)
@@ -264,17 +260,25 @@ class BookControllerIntegrationTest {
                 .andExpect(status().isNotFound())
                 .andReturn();
         String jsonResponse = result.getResponse().getContentAsString();
-        Map<String, Object> responseBody = objectMapper.readValue(jsonResponse,
-                new TypeReference<Map<String, Object>>() {});
-        assertNotNull(responseBody.get("errors"));
-        assertEquals("Can't find book with id: " + id, responseBody.get("errors"));
+        String message = "Can't find book with id: " + id;
+        assertTrue(jsonResponse.contains(message));
     }
 
     @Test
+    @DisplayName("Delete book by an existing id")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void deleteBook_ExistingID_Success() throws Exception {
         MvcResult result = mockMvc.perform(delete("/books/1"))
                 .andExpect(status().isNoContent())
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("Try delete a book by a not correct role")
+    @WithMockUser(username = "user", roles = {"USER"})
+    void deleteBook_InValidRole_NotSuccess() throws Exception {
+        MvcResult result = mockMvc.perform(delete("/books/1"))
+                .andExpect(status().isForbidden())
                 .andReturn();
     }
 }

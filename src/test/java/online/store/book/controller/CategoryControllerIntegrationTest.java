@@ -2,7 +2,6 @@ package online.store.book.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -54,7 +53,7 @@ class CategoryControllerIntegrationTest {
 
     @BeforeEach
     void setUp(@Autowired DataSource dataSource, TestInfo testInfo) throws Exception {
-        if (!testInfo.getDisplayName().contains("Get books by category id")) {
+        if (!testInfo.getDisplayName().contains("Find a books by an existing category id")) {
             teardown(dataSource);
             try (Connection connection = dataSource.getConnection()) {
                 connection.setAutoCommit(true);
@@ -168,7 +167,7 @@ class CategoryControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "user", roles = {"User"})
-    @DisplayName("Delete category with a non-coret user role")
+    @DisplayName("Delete category with a non-correct user role")
     void deleteCategory_InValidRole_NotSuccess() throws Exception {
         MvcResult result = mockMvc.perform(delete("/categories/1"))
                 .andExpect(status().isForbidden())
@@ -177,22 +176,21 @@ class CategoryControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
-    @DisplayName("Get all categories")
+    @DisplayName("Find all categories")
     void getAll_Success() throws Exception {
         MvcResult result = mockMvc.perform(get("/categories"))
                 .andExpect(status().isOk())
                 .andReturn();
 
         List<CategoryDto> categoryDtoList = objectMapper.readValue(result.getResponse()
-                .getContentAsString(), new TypeReference<List<CategoryDto>>() {
-        });
+                .getContentAsString(), new TypeReference<List<CategoryDto>>() {});
         assertFalse(categoryDtoList.isEmpty());
         assertEquals(2, categoryDtoList.size());
     }
 
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
-    @DisplayName("Get category with existing id")
+    @DisplayName("Find a category with an existing id")
     void getCategoryById_ExistingId_ShouldReturnCorrectCategory() throws Exception {
         Long id = 1L;
         CategoryDto expectedCategoryDto = new CategoryDto(id, "Science", null);
@@ -208,7 +206,7 @@ class CategoryControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
-    @DisplayName("Get category with not existing id")
+    @DisplayName("Find a category with a not existing id")
     void getCategoryById_NotExistingId_ShouldException() throws Exception {
         long id = 20L;
 
@@ -229,7 +227,7 @@ class CategoryControllerIntegrationTest {
             "classpath:db/categories/remove_categories_from_db.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
-    @DisplayName("Get books by category id")
+    @DisplayName("Find a books by an existing category id")
     @WithMockUser(username = "user", roles = {"USER"})
     void getBooksByCategoryId_ExistingId_ShouldReturnCorrectBooks() throws Exception {
         MvcResult result = mockMvc.perform(get("/categories/1/books"))

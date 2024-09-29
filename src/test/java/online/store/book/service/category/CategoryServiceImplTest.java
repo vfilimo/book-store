@@ -17,6 +17,7 @@ import online.store.book.mapper.CategoryMapper;
 import online.store.book.model.Category;
 import online.store.book.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,6 +58,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Find all categories")
     void findAll_shouldReturnCorrectNumberOfCategory() {
         Page<Category> categoryPage = new PageImpl<>(List.of(category));
         when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
@@ -71,6 +73,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Find a category by an existing id")
     void findById_existingId_shouldReturnCorrectCategory() {
         Long id = 1L;
 
@@ -85,6 +88,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Try to find a category by not existing id")
     void findById_notExistingId_shouldThrowExceptions() {
         Long id = 2L;
 
@@ -98,6 +102,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Save a correct category")
     void save_correctCategory_shouldReturnCorrectCategory() {
         when(categoryMapper.toEntity(createCategoryRequestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
@@ -112,6 +117,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update a category by an existing id")
     void update_existingId_shouldReturnCorrectCategory() {
         Long id = 1L;
 
@@ -130,6 +136,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Try to update a category by a not existing id")
     void update_notExistingId_shouldThrowException() {
         Long id = 2L;
 
@@ -143,6 +150,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Delete a category by id")
     void deleteById_successful() {
         Long id = 1L;
 

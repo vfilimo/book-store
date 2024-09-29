@@ -27,6 +27,7 @@ import online.store.book.model.Category;
 import online.store.book.repository.book.BookRepository;
 import online.store.book.repository.book.BookSpecificationBuilder;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -87,6 +88,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Save correct book")
     void save_correctBook_shouldReturnCorrectBook() {
         Mockito.when(bookMapper.toEntity(bookRequestDto)).thenReturn(book);
         Mockito.when(bookRepository.save(book)).thenReturn(book);
@@ -103,6 +105,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Find all books")
     void findAll_shouldReturnCorrectNumberOfBooks() {
         List<Book> bookList = List.of(book);
         Page<Book> bookPage = new PageImpl<>(bookList);
@@ -121,6 +124,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Find a book by an existing id")
     void findBookById_existingId_shouldReturnCorrectBook() {
         when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
         when(bookMapper.toDto(book)).thenReturn(bookDto);
@@ -134,6 +138,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Try to find a book by a not existing id")
     void findBookById_notExistingId_shouldThrowException() {
         Long id = 1L;
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
@@ -147,6 +152,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update a book by an existing is")
     void update_existingId_shouldReturnCorrectBook() {
         Long id = 1L;
 
@@ -166,6 +172,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Try to update book by a not existing id")
     void update_notExistingId_shouldThrowException() {
         Long id = 10L;
 
@@ -179,6 +186,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Delete book by an existing id")
     void delete_testSuccess() {
         Long id = 1L;
 
@@ -190,6 +198,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Find a book using an existing search parameters")
     void search_existsParams_shouldReturnCorrectBooksList() {
         BookSearchParameters searchParams =
                 new BookSearchParameters(new String[]{"Animal Farm: A Fairy Story"},
@@ -211,6 +220,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Find a book using a not search parameters")
     void search_notExistsParams_shouldReturnEmptyBooksList() {
         BookSearchParameters searchParams =
                 new BookSearchParameters(new String[]{"Book"},
@@ -232,6 +242,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("Find a book by category id")
     void findAllByCategoryId_existsCategory_shouldReturnCorrectBook() {
         Long id = 1L;
         BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds = new BookDtoWithoutCategoryIds(
