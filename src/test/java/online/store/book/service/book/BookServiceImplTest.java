@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,14 +43,14 @@ import org.springframework.data.jpa.domain.Specification;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {
-    @InjectMocks
-    private BookServiceImpl bookService;
     @Mock
     private BookRepository bookRepository;
     @Mock
     private BookMapper bookMapper;
     @Mock
     private BookSpecificationBuilder specificationBuilder;
+    @InjectMocks
+    private BookServiceImpl bookService;
     private CreateBookRequestDto bookRequestDto;
     private Book book;
     private BookDto bookDto;
@@ -57,34 +58,10 @@ class BookServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        bookRequestDto = new CreateBookRequestDto();
-        bookRequestDto.setAuthor("George Orwell");
-        bookRequestDto.setTitle("Animal Farm: A Fairy Story");
-        bookRequestDto.setIsbn("123456789");
-        bookRequestDto.setPrice(new BigDecimal(10));
-        bookRequestDto.setCategoryIds(List.of(1L));
-
-        book = new Book();
-        book.setId(1L);
-        book.setAuthor(bookRequestDto.getAuthor());
-        book.setTitle(bookRequestDto.getTitle());
-        book.setIsbn(bookRequestDto.getIsbn());
-        book.setPrice(bookRequestDto.getPrice());
-        book.setCategories(bookRequestDto.getCategoryIds().stream()
-                .map(Category::new)
-                .collect(Collectors.toSet()));
-
-        bookDto = new BookDto();
-        bookDto.setId(book.getId());
-        bookDto.setAuthor(book.getAuthor());
-        bookDto.setTitle(book.getTitle());
-        bookDto.setIsbn(book.getIsbn());
-        bookDto.setPrice(book.getPrice());
-        bookDto.setCategoryIds(book.getCategories().stream()
-                .map(Category::getId)
-                .collect(Collectors.toList()));
-
-        pageable = PageRequest.of(0, 10);
+        bookRequestDto = createBookRequestDto();
+        book = createBook();
+        bookDto = createBookDto(book);
+        pageable = createPageable();
     }
 
     @Test
@@ -261,5 +238,45 @@ class BookServiceImplTest {
         verify(bookRepository, times(1)).findAllByCategoryId(id, pageable);
         verify(bookMapper, times(1)).toDtoWithoutCategoryIds(bookPage);
         verifyNoMoreInteractions(bookRepository, bookMapper);
+    }
+
+    private CreateBookRequestDto createBookRequestDto() {
+        CreateBookRequestDto bookRequestDto = new CreateBookRequestDto();
+        bookRequestDto.setAuthor("George Orwell");
+        bookRequestDto.setTitle("Animal Farm: A Fairy Story");
+        bookRequestDto.setIsbn("123456789");
+        bookRequestDto.setPrice(new BigDecimal(10));
+        bookRequestDto.setCategoryIds(List.of(1L));
+        return bookRequestDto;
+    }
+
+    private Book createBook() {
+        Book book = new Book();
+        book.setId(1L);
+        book.setAuthor("George Orwell");
+        book.setTitle("Animal Farm: A Fairy Story");
+        book.setIsbn("123456789");
+        book.setPrice(new BigDecimal(10));
+        book.setCategories(new HashSet<>(List.of(new Category(1L))));
+        return book;
+    }
+
+    private BookDto createBookDto(Book book) {
+        BookDto bookDto = new BookDto();
+        bookDto.setId(book.getId());
+        bookDto.setAuthor(book.getAuthor());
+        bookDto.setTitle(book.getTitle());
+        bookDto.setIsbn(book.getIsbn());
+        bookDto.setPrice(book.getPrice());
+        bookDto.setCategoryIds(book.getCategories().stream()
+                .map(Category::getId)
+                .collect(Collectors.toList()));
+        bookDto.setCoverImage(book.getCoverImage());
+        bookDto.setDescription(book.getDescription());
+        return bookDto;
+    }
+
+    private Pageable createPageable() {
+        return PageRequest.of(0, 10);
     }
 }

@@ -30,12 +30,12 @@ import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
-    @InjectMocks
-    private CategoryServiceImpl categoryService;
     @Mock
     private CategoryMapper categoryMapper;
     @Mock
     private CategoryRepository categoryRepository;
+    @InjectMocks
+    private CategoryServiceImpl categoryService;
     private CategoryDto categoryDto;
     private CreateCategoryRequestDto createCategoryRequestDto;
     private Category category;
@@ -43,18 +43,10 @@ class CategoryServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        category = new Category();
-        category.setId(1L);
-        category.setName("Horror");
-        category.setDescription("some description");
-
-        categoryDto = new CategoryDto(category.getId(), category.getName(),
-                category.getDescription());
-
-        createCategoryRequestDto = new CreateCategoryRequestDto(category.getName(),
-                category.getDescription());
-
-        pageable = PageRequest.of(0, 10);
+        createCategoryRequestDto = createCategoryRequestDto();
+        category = createCategory();
+        categoryDto = createCategoryDto(category);
+        pageable = createPageable();
     }
 
     @Test
@@ -159,5 +151,25 @@ class CategoryServiceImplTest {
         categoryService.deleteById(id);
         verify(categoryRepository, times(1)).deleteById(id);
         verifyNoMoreInteractions(categoryRepository);
+    }
+
+    private CreateCategoryRequestDto createCategoryRequestDto() {
+        return new CreateCategoryRequestDto("Horror", "some description");
+    }
+
+    private Category createCategory() {
+        Category category = new Category();
+        category.setId(1L);
+        category.setName("Horror");
+        category.setDescription("some description");
+        return category;
+    }
+
+    private CategoryDto createCategoryDto(Category category) {
+        return new CategoryDto(category.getId(), category.getName(), category.getDescription());
+    }
+
+    private Pageable createPageable() {
+        return PageRequest.of(0, 10);
     }
 }
