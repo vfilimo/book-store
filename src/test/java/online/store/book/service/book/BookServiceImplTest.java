@@ -51,22 +51,14 @@ class BookServiceImplTest {
     private BookSpecificationBuilder specificationBuilder;
     @InjectMocks
     private BookServiceImpl bookService;
-    private CreateBookRequestDto bookRequestDto;
-    private Book book;
-    private BookDto bookDto;
-    private Pageable pageable;
-
-    @BeforeEach
-    void setUp() {
-        bookRequestDto = createBookRequestDto();
-        book = createBook();
-        bookDto = createBookDto(book);
-        pageable = createPageable();
-    }
 
     @Test
     @DisplayName("Save correct book")
     void save_correctBook_shouldReturnCorrectBook() {
+        CreateBookRequestDto bookRequestDto = createBookRequestDto();
+        Book book = createBook();
+        BookDto bookDto = createBookDto(book);
+
         Mockito.when(bookMapper.toEntity(bookRequestDto)).thenReturn(book);
         Mockito.when(bookRepository.save(book)).thenReturn(book);
         Mockito.when(bookMapper.toDto(book)).thenReturn(bookDto);
@@ -84,6 +76,9 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Find all books")
     void findAll_shouldReturnCorrectNumberOfBooks() {
+        Pageable pageable = createPageable();
+        Book book = createBook();
+        BookDto bookDto = createBookDto(book);
         List<Book> bookList = List.of(book);
         Page<Book> bookPage = new PageImpl<>(bookList);
         List<BookDto> bookDtoList = List.of(bookDto);
@@ -103,6 +98,8 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Find a book by an existing id")
     void findBookById_existingId_shouldReturnCorrectBook() {
+        Book book = createBook();
+        BookDto bookDto = createBookDto(book);
         when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
         when(bookMapper.toDto(book)).thenReturn(bookDto);
 
@@ -132,6 +129,9 @@ class BookServiceImplTest {
     @DisplayName("Update a book by an existing is")
     void update_existingId_shouldReturnCorrectBook() {
         Long id = 1L;
+        CreateBookRequestDto bookRequestDto = createBookRequestDto();
+        Book book = createBook();
+        BookDto bookDto = createBookDto(book);
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         doNothing().when(bookMapper).updateBookFromDto(bookRequestDto, book);
@@ -152,6 +152,7 @@ class BookServiceImplTest {
     @DisplayName("Try to update book by a not existing id")
     void update_notExistingId_shouldThrowException() {
         Long id = 10L;
+        CreateBookRequestDto bookRequestDto = createBookRequestDto();
 
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -177,6 +178,9 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Find a book using an existing search parameters")
     void search_existsParams_shouldReturnCorrectBooksList() {
+        Pageable pageable = createPageable();
+        Book book = createBook();
+        BookDto bookDto = createBookDto(book);
         BookSearchParameters searchParams =
                 new BookSearchParameters(new String[]{"Animal Farm: A Fairy Story"},
                         new String[]{"George Orwell"});
@@ -199,6 +203,7 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Find a book using a not search parameters")
     void search_notExistsParams_shouldReturnEmptyBooksList() {
+        Pageable pageable = createPageable();
         BookSearchParameters searchParams =
                 new BookSearchParameters(new String[]{"Book"},
                         new String[]{"Author"});
@@ -222,6 +227,8 @@ class BookServiceImplTest {
     @DisplayName("Find a book by category id")
     void findAllByCategoryId_existsCategory_shouldReturnCorrectBook() {
         Long id = 1L;
+        Book book = createBook();
+        Pageable pageable = createPageable();
         BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds = new BookDtoWithoutCategoryIds(
                 book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(), book.getPrice(),
                 book.getDescription(), book.getCoverImage()

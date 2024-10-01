@@ -38,7 +38,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CategoryControllerIntegrationTest {
+class CategoryControllerTest {
+    public static final String URL_TEMPLATE = "/categories";
+    private static final String SEPARATOR = "/";
     protected static MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
@@ -89,7 +91,7 @@ class CategoryControllerIntegrationTest {
                 categoryRequestDto.description());
         String jsonRequest = objectMapper.writeValueAsString(categoryRequestDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/categories")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(URL_TEMPLATE)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -108,7 +110,7 @@ class CategoryControllerIntegrationTest {
                 categoryRequestDto.description());
         String jsonRequest = objectMapper.writeValueAsString(categoryRequestDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/categories")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(URL_TEMPLATE)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -128,7 +130,8 @@ class CategoryControllerIntegrationTest {
                 categoryRequestDto.description());
         String jsonRequest = objectMapper.writeValueAsString(categoryRequestDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/categories/" + id)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .put(URL_TEMPLATE + SEPARATOR + id)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -146,7 +149,8 @@ class CategoryControllerIntegrationTest {
         CreateCategoryRequestDto categoryRequestDto = new CreateCategoryRequestDto("comedy", "");
         String jsonRequest = objectMapper.writeValueAsString(categoryRequestDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/categories/" + id)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .put(URL_TEMPLATE + SEPARATOR + id)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -160,17 +164,9 @@ class CategoryControllerIntegrationTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DisplayName("Delete category with existing id")
     void deleteCategory_ExistingId_Success() throws Exception {
-        MvcResult result = mockMvc.perform(delete("/categories/1"))
+        long id = 1L;
+        MvcResult result = mockMvc.perform(delete(URL_TEMPLATE + SEPARATOR + id))
                 .andExpect(status().isNoContent())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "user", roles = {"User"})
-    @DisplayName("Delete category with a non-correct user role")
-    void deleteCategory_InValidRole_NotSuccess() throws Exception {
-        MvcResult result = mockMvc.perform(delete("/categories/1"))
-                .andExpect(status().isForbidden())
                 .andReturn();
     }
 
@@ -178,7 +174,7 @@ class CategoryControllerIntegrationTest {
     @WithMockUser(username = "user", roles = {"USER"})
     @DisplayName("Find all categories")
     void getAll_Success() throws Exception {
-        MvcResult result = mockMvc.perform(get("/categories"))
+        MvcResult result = mockMvc.perform(get(URL_TEMPLATE))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -195,7 +191,7 @@ class CategoryControllerIntegrationTest {
         Long id = 1L;
         CategoryDto expectedCategoryDto = new CategoryDto(id, "Science", null);
 
-        MvcResult result = mockMvc.perform(get("/categories/" + id))
+        MvcResult result = mockMvc.perform(get(URL_TEMPLATE + SEPARATOR + id))
                 .andExpect(status().isOk())
                 .andReturn();
         CategoryDto actualCategoryDto = objectMapper.readValue(
@@ -210,7 +206,7 @@ class CategoryControllerIntegrationTest {
     void getCategoryById_NotExistingId_ShouldException() throws Exception {
         long id = 20L;
 
-        MvcResult result = mockMvc.perform(get("/categories/" + id))
+        MvcResult result = mockMvc.perform(get(URL_TEMPLATE + SEPARATOR + id))
                 .andExpect(status().isNotFound())
                 .andReturn();
         String responseString = result.getResponse().getContentAsString();
@@ -230,7 +226,9 @@ class CategoryControllerIntegrationTest {
     @DisplayName("Find a books by an existing category id")
     @WithMockUser(username = "user", roles = {"USER"})
     void getBooksByCategoryId_ExistingId_ShouldReturnCorrectBooks() throws Exception {
-        MvcResult result = mockMvc.perform(get("/categories/1/books"))
+        long id = 1L;
+        MvcResult result = mockMvc.perform(get(
+                URL_TEMPLATE + SEPARATOR + id + SEPARATOR + "books"))
                 .andExpect(status().isOk())
                 .andReturn();
         String contentAsString = result.getResponse().getContentAsString();

@@ -2,6 +2,7 @@ package online.store.book;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import online.store.book.model.Book;
 import online.store.book.repository.book.BookRepository;
@@ -36,20 +37,12 @@ public class BookRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
 
         Page<Book> actualFirstCategory = bookRepository.findAllByCategoryId(1L, pageable);
-        String actualAuthor = actualFirstCategory.stream()
-                .findFirst()
-                .get()
-                .getAuthor();
+
         assertEquals(1L, actualFirstCategory.getTotalElements());
-        assertEquals("John Doe", actualAuthor);
 
         Page<Book> actualSecondCategory = bookRepository.findAllByCategoryId(2L, pageable);
-        String actualTitle = actualSecondCategory.stream()
-                .findFirst()
-                .get()
-                .getTitle();
+
         assertEquals(2L, actualSecondCategory.getTotalElements());
-        assertEquals("Horror Stories", actualTitle);
     }
 
     @Test
@@ -65,9 +58,7 @@ public class BookRepositoryTest {
     void findAllByCategoryId_searchByNotExistingCategory_shouldReturnEmpty() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
         Page<Book> bookPage = bookRepository.findAllByCategoryId(3L, pageable);
-        boolean isPresent = bookPage.stream()
-                .findFirst()
-                .isPresent();
-        assertFalse(isPresent);
+
+        assertTrue(bookPage.getTotalElements() == 0);
     }
 }

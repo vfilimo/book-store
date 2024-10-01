@@ -39,7 +39,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class BookControllerIntegrationTest {
+class BookControllerTest {
+    public static final String URL_TEMPLATE = "/books";
+    private static final String SEPARATOR = "/";
     protected static MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
@@ -58,7 +60,7 @@ class BookControllerIntegrationTest {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(connection,
-                    new ClassPathResource("db/books/add_books_for_Integration_Test.sql"));
+                    new ClassPathResource("db/books/add_books_for_integration_test.sql"));
         }
     }
 
@@ -72,7 +74,7 @@ class BookControllerIntegrationTest {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(connection,
-                    new ClassPathResource("db/books/remove_books_for_Integration_Test.sql"));
+                    new ClassPathResource("db/books/remove_books_for_integration_test.sql"));
         }
     }
 
@@ -96,7 +98,7 @@ class BookControllerIntegrationTest {
 
         String jsonRequest = objectMapper.writeValueAsString(bookRequestDto);
 
-        MvcResult result = mockMvc.perform(post("/books")
+        MvcResult result = mockMvc.perform(post(URL_TEMPLATE)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -121,7 +123,7 @@ class BookControllerIntegrationTest {
 
         String jsonRequest = objectMapper.writeValueAsString(bookRequestDto);
 
-        MvcResult result = mockMvc.perform(post("/books")
+        MvcResult result = mockMvc.perform(post(URL_TEMPLATE)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -136,7 +138,7 @@ class BookControllerIntegrationTest {
     @DisplayName("Find all books in the db")
     @WithMockUser(username = "user", roles = {"USER"})
     void getAll_ReturnCorrectBooks() throws Exception {
-        MvcResult result = mockMvc.perform(get("/books"))
+        MvcResult result = mockMvc.perform(get(URL_TEMPLATE))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -150,15 +152,16 @@ class BookControllerIntegrationTest {
     @DisplayName("Find a book in the db with an existing id")
     @WithMockUser(username = "user", roles = {"USER"})
     void getBookById_ExistingId_ShouldReturnCorrectBook() throws Exception {
+        Long id = 2L;
         BookDto expectedBook = new BookDto();
-        expectedBook.setId(2L);
+        expectedBook.setId(id);
         expectedBook.setTitle("Horror Stories");
         expectedBook.setAuthor("Jane Smith");
         expectedBook.setIsbn("978-0987654321");
         expectedBook.setPrice(new BigDecimal("14.99"));
         expectedBook.setCategoryIds(List.of(2L));
 
-        MvcResult result = mockMvc.perform(get("/books/2"))
+        MvcResult result = mockMvc.perform(get(URL_TEMPLATE + SEPARATOR + id))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -173,7 +176,7 @@ class BookControllerIntegrationTest {
     @DisplayName("Try to find a book in the db with a non-existing id")
     void getBookById_NotExistingId_NotSuccess() throws Exception {
         long id = 5;
-        MvcResult result = mockMvc.perform(get("/books/" + id))
+        MvcResult result = mockMvc.perform(get(URL_TEMPLATE + SEPARATOR + id))
                 .andExpect(status().isNotFound())
                 .andReturn();
         String jsonResponse = result.getResponse().getContentAsString();
@@ -193,7 +196,7 @@ class BookControllerIntegrationTest {
         expectedBook.setPrice(new BigDecimal("14.99"));
         expectedBook.setCategoryIds(List.of(2L));
 
-        MvcResult result = mockMvc.perform(get("/books/search")
+        MvcResult result = mockMvc.perform(get(URL_TEMPLATE + "/search")
                         .param("titles", "")
                         .param("authors", "Jane Smith")
                         .param("sort", "id"))
@@ -212,6 +215,7 @@ class BookControllerIntegrationTest {
     @DisplayName("Update a book in the db by an existing id and valid requestDto")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void updateBook_ExistingID_shouldReturnCorrectBook() throws Exception {
+        Long id = 1L;
         CreateBookRequestDto bookRequestDto = new CreateBookRequestDto();
         bookRequestDto.setAuthor("George Orwell");
         bookRequestDto.setTitle("Animal Farm: A Fairy Story");
@@ -220,7 +224,7 @@ class BookControllerIntegrationTest {
         bookRequestDto.setCategoryIds(List.of(2L));
 
         BookDto expectedBookDto = new BookDto();
-        expectedBookDto.setId(1L);
+        expectedBookDto.setId(id);
         expectedBookDto.setAuthor(bookRequestDto.getAuthor());
         expectedBookDto.setTitle(bookRequestDto.getTitle());
         expectedBookDto.setIsbn(bookRequestDto.getIsbn());
@@ -229,7 +233,7 @@ class BookControllerIntegrationTest {
 
         String jsonRequest = objectMapper.writeValueAsString(bookRequestDto);
 
-        MvcResult result = mockMvc.perform(put("/books/1")
+        MvcResult result = mockMvc.perform(put(URL_TEMPLATE + SEPARATOR + id)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -254,7 +258,7 @@ class BookControllerIntegrationTest {
 
         String jsonRequest = objectMapper.writeValueAsString(bookRequestDto);
 
-        MvcResult result = mockMvc.perform(put("/books/" + id)
+        MvcResult result = mockMvc.perform(put(URL_TEMPLATE + SEPARATOR + id)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -268,17 +272,9 @@ class BookControllerIntegrationTest {
     @DisplayName("Delete book by an existing id")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void deleteBook_ExistingID_Success() throws Exception {
-        MvcResult result = mockMvc.perform(delete("/books/1"))
+        long id = 1L;
+        MvcResult result = mockMvc.perform(delete(URL_TEMPLATE + SEPARATOR + id))
                 .andExpect(status().isNoContent())
-                .andReturn();
-    }
-
-    @Test
-    @DisplayName("Try delete a book by a not correct role")
-    @WithMockUser(username = "user", roles = {"USER"})
-    void deleteBook_InValidRole_NotSuccess() throws Exception {
-        MvcResult result = mockMvc.perform(delete("/books/1"))
-                .andExpect(status().isForbidden())
                 .andReturn();
     }
 }

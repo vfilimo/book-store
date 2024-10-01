@@ -36,22 +36,13 @@ class CategoryServiceImplTest {
     private CategoryRepository categoryRepository;
     @InjectMocks
     private CategoryServiceImpl categoryService;
-    private CategoryDto categoryDto;
-    private CreateCategoryRequestDto createCategoryRequestDto;
-    private Category category;
-    private Pageable pageable;
-
-    @BeforeEach
-    void setUp() {
-        createCategoryRequestDto = createCategoryRequestDto();
-        category = createCategory();
-        categoryDto = createCategoryDto(category);
-        pageable = createPageable();
-    }
 
     @Test
     @DisplayName("Find all categories")
     void findAll_shouldReturnCorrectNumberOfCategory() {
+        Category category = createCategory();
+        CategoryDto categoryDto = createCategoryDto(category);
+        Pageable pageable = createPageable();
         Page<Category> categoryPage = new PageImpl<>(List.of(category));
         when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
         when(categoryMapper.toDto(categoryPage)).thenReturn(List.of(categoryDto));
@@ -68,6 +59,8 @@ class CategoryServiceImplTest {
     @DisplayName("Find a category by an existing id")
     void findById_existingId_shouldReturnCorrectCategory() {
         Long id = 1L;
+        Category category = createCategory();
+        CategoryDto categoryDto = createCategoryDto(category);
 
         when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
         when(categoryMapper.toDto(category)).thenReturn(categoryDto);
@@ -96,6 +89,10 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("Save a correct category")
     void save_correctCategory_shouldReturnCorrectCategory() {
+        CreateCategoryRequestDto createCategoryRequestDto = createCategoryRequestDto();
+        Category category = createCategory();
+        CategoryDto categoryDto = createCategoryDto(category);
+
         when(categoryMapper.toEntity(createCategoryRequestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(categoryDto);
@@ -112,6 +109,9 @@ class CategoryServiceImplTest {
     @DisplayName("Update a category by an existing id")
     void update_existingId_shouldReturnCorrectCategory() {
         Long id = 1L;
+        CreateCategoryRequestDto createCategoryRequestDto = createCategoryRequestDto();
+        Category category = createCategory();
+        CategoryDto categoryDto = createCategoryDto(category);
 
         when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
         doNothing().when(categoryMapper).updateCategoryFromDto(createCategoryRequestDto, category);
@@ -131,6 +131,7 @@ class CategoryServiceImplTest {
     @DisplayName("Try to update a category by a not existing id")
     void update_notExistingId_shouldThrowException() {
         Long id = 2L;
+        CreateCategoryRequestDto createCategoryRequestDto = createCategoryRequestDto();
 
         when(categoryRepository.findById(id)).thenReturn(Optional.empty());
 
