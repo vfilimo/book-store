@@ -54,11 +54,11 @@ public class OrderController {
 
     @Operation(summary = "Update order status", description = "Only for Admin role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PatchMapping("/{id}")
+    @PatchMapping("/{orderId}")
     public OrderResponseDto updateOrderStatus(
-            @PathVariable Long id,
+            @PathVariable Long orderId,
             @RequestBody @Valid OrderUpdateRequestDto orderUpdateRequestDto) {
-        return orderService.updateOrderStatus(id, orderUpdateRequestDto);
+        return orderService.updateOrderStatus(orderId, orderUpdateRequestDto);
     }
 
     @Operation(summary = "Find specific order by order id")
@@ -71,7 +71,7 @@ public class OrderController {
 
     @Operation(summary = "Find specific order item by id and order id")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("{orderId}/items/{itemId}")
+    @GetMapping("/{orderId}/items/{itemId}")
     public OrderItemResponseDto getSpecificOrderItem(
             @PathVariable Long orderId, @PathVariable Long itemId) {
         User user = getUserFromContext();
