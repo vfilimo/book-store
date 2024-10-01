@@ -16,7 +16,6 @@ import online.store.book.exceptions.EntityNotFoundException;
 import online.store.book.mapper.CategoryMapper;
 import online.store.book.model.Category;
 import online.store.book.repository.CategoryRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

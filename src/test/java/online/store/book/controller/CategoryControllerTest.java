@@ -39,9 +39,9 @@ import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CategoryControllerTest {
-    public static final String URL_TEMPLATE = "/categories";
-    private static final String SEPARATOR = "/";
     protected static MockMvc mockMvc;
+    private static final String URL_TEMPLATE = "/categories";
+    private static final String SEPARATOR = "/";
     @Autowired
     private ObjectMapper objectMapper;
 

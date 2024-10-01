@@ -40,9 +40,9 @@ import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BookControllerTest {
-    public static final String URL_TEMPLATE = "/books";
-    private static final String SEPARATOR = "/";
     protected static MockMvc mockMvc;
+    private static final String URL_TEMPLATE = "/books";
+    private static final String SEPARATOR = "/";
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -215,7 +215,6 @@ class BookControllerTest {
     @DisplayName("Update a book in the db by an existing id and valid requestDto")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void updateBook_ExistingID_shouldReturnCorrectBook() throws Exception {
-        Long id = 1L;
         CreateBookRequestDto bookRequestDto = new CreateBookRequestDto();
         bookRequestDto.setAuthor("George Orwell");
         bookRequestDto.setTitle("Animal Farm: A Fairy Story");
@@ -223,6 +222,7 @@ class BookControllerTest {
         bookRequestDto.setPrice(new BigDecimal(10));
         bookRequestDto.setCategoryIds(List.of(2L));
 
+        Long id = 1L;
         BookDto expectedBookDto = new BookDto();
         expectedBookDto.setId(id);
         expectedBookDto.setAuthor(bookRequestDto.getAuthor());

@@ -27,7 +27,6 @@ import online.store.book.model.Book;
 import online.store.book.model.Category;
 import online.store.book.repository.book.BookRepository;
 import online.store.book.repository.book.BookSpecificationBuilder;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
