@@ -21,6 +21,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +56,14 @@ class CategoryControllerTest {
 
     @BeforeEach
     void setUp(@Autowired DataSource dataSource, TestInfo testInfo) throws Exception {
-        if (!testInfo.getDisplayName().contains("Find a books by an existing category id")) {
-            teardown(dataSource);
-            try (Connection connection = dataSource.getConnection()) {
-                connection.setAutoCommit(true);
-                ScriptUtils.executeSqlScript(connection,
-                        new ClassPathResource("db/categories/add_categories_to_db.sql"));
-            }
+        if (testInfo.getTags().contains("NoSetUp")) {
+            return;
+        }
+        teardown(dataSource);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            ScriptUtils.executeSqlScript(connection,
+                    new ClassPathResource("db/categories/add_categories_to_db.sql"));
         }
     }
 
@@ -225,10 +227,11 @@ class CategoryControllerTest {
     @Test
     @DisplayName("Find a books by an existing category id")
     @WithMockUser(username = "user", roles = {"USER"})
+    @Tag("NoSetUp")
     void getBooksByCategoryId_ExistingId_ShouldReturnCorrectBooks() throws Exception {
         long id = 1L;
         MvcResult result = mockMvc.perform(get(
-                URL_TEMPLATE + SEPARATOR + id + SEPARATOR + "books"))
+                        URL_TEMPLATE + SEPARATOR + id + SEPARATOR + "books"))
                 .andExpect(status().isOk())
                 .andReturn();
         String contentAsString = result.getResponse().getContentAsString();
