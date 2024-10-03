@@ -5,17 +5,17 @@
 
 ## 🚀 Introduction
 
-The Online Bookstore API is a multifunctional system designed to manage unlimited books in your store.
+The Online Bookstore API is a multifunctional system that manages unlimited books in your store.
 This application offers a user-friendly interface for administrators and customers, 
 providing a comprehensive toolset for efficiently managing the bookstore. 
-The project focuses on the server-side, providing a stable and flexible foundation for future development.
+The project focuses on the server side, providing a stable and flexible foundation for future development.
 
 ## ✨ Inspiration
 
 This project was inspired by the desire to create a simple and efficient server-side system for managing a bookstore.
 The inspiration came from observing existing solutions, which are often overly complex and bloated with features.
 I aimed to develop a minimalist and straightforward API that easily integrates with external clients, 
-allowing administrators to efficiently manage the book catalog and users to conveniently interact with the store.
+allowing administrators to efficiently manage the book catalog and users to interact with the store conveniently.
 ___
 ##  🛠️ Technologies and Tools
 
@@ -61,9 +61,9 @@ ___
 
 ### Build Tools:
 
-  * Maven (with Checkstyle and Compiler plugins): A powerful build automation tool used for managing project dependencies and lifecycle.
+  * Maven (with Checkstyle and Compiler plugins): A powerful build automation tool for managing project dependencies and lifecycle.
     * Checkstyle plugin: helps maintain code quality by enforcing coding standards.
-    * Compiler plugin: ensures that the project compiles with the specified Java version, improving build consistency and reliability.
+    * Compiler plugin: ensures the project compiles with the specified Java version, improving build consistency and reliability.
 ___
 
 ## 💾 Database structure
@@ -83,8 +83,8 @@ After registration, users need to log in. This is the first and most crucial ste
 Further functionality is restricted based on user roles (user and administrator).
 
 **The application already has a user with the ADMIN role:**
-- **email: admin@example.com**
-- **password: password**  
+- **Email: admin@example.com**
+- **Password: password**  
 
 **For a user with the USER role - it is necessary to register**
 
@@ -151,11 +151,11 @@ All functions in this section are available exclusively to users with the "USER"
 2. Clone repo;
 3. Configure all the necessary fields in the .env file;
 4. Open a terminal and navigate to the root directory of the project on your machine;
-5. Build the project by command `mvn clean install`;
+5. Build the project by the command `mvn clean install`;
 6. Run the application using Docker Compose `docker-compose up`;  
 
 After these steps use the link:  
  *http:// localhost: SPRING_LOCAL_PORT/swagger-ui/index.html* (SPRING_LOCAL_PORT - configured in the .env file.)  
-For example: http://localhost:8088/swagger-ui/index.html
+For example http://localhost:8088/swagger-ui/index.html
 
 Author [*Vitaliy Filimonov*](https://github.com/vfilimo)
