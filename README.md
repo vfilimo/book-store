@@ -1,6 +1,6 @@
 # Book store API
 
-![Project Screenshot](images/book_store_baner.jpg)
+![Project Screenshot](images/book_store_baner_1.png)
 
 
 ## 🚀 Introduction
